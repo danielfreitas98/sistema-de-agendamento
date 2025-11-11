@@ -14,7 +14,13 @@ export function useAppointments() {
       // Obter o usuário atual autenticado
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       
-      if (userError) throw userError
+      if (userError) {
+        // Se o erro for relacionado à sessão, fornecer mensagem mais clara
+        if (userError.message?.includes('session') || userError.message?.includes('Auth session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw userError
+      }
       
       if (!user) {
         setAppointments([])
@@ -29,7 +35,13 @@ export function useAppointments() {
         .eq('user_id', user.id)
         .order('start_time', { ascending: true })
       
-      if (fetchError) throw fetchError
+      if (fetchError) {
+        // Melhorar mensagens de erro do Supabase
+        if (fetchError.message?.includes('JWT') || fetchError.message?.includes('session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw fetchError
+      }
       
       setAppointments(data || [])
       setLoading(false)
@@ -46,7 +58,12 @@ export function useAppointments() {
       // Obter o usuário atual autenticado
       const { data: { user }, error: userError } = await supabase.auth.getUser()
       
-      if (userError) throw userError
+      if (userError) {
+        if (userError.message?.includes('session') || userError.message?.includes('Auth session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw userError
+      }
       
       if (!user) {
         throw new Error('Você precisa estar autenticado para criar agendamentos')
@@ -63,7 +80,12 @@ export function useAppointments() {
         .insert([appointmentWithUserId])
         .select()
       
-      if (insertError) throw insertError
+      if (insertError) {
+        if (insertError.message?.includes('JWT') || insertError.message?.includes('session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw insertError
+      }
       
       // Atualizar a lista de agendamentos após inserção bem-sucedida
       await fetchAppointments()
@@ -79,13 +101,27 @@ export function useAppointments() {
     setError(null)
     
     try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError) {
+        if (userError.message?.includes('session') || userError.message?.includes('Auth session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw userError
+      }
+
       const { data, error: updateError } = await supabase
         .from('appointments')
         .update(updatedData)
         .eq('id', id)
         .select()
       
-      if (updateError) throw updateError
+      if (updateError) {
+        if (updateError.message?.includes('JWT') || updateError.message?.includes('session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw updateError
+      }
       
       // Atualizar a lista de agendamentos após atualização bem-sucedida
       await fetchAppointments()
@@ -101,12 +137,26 @@ export function useAppointments() {
     setError(null)
     
     try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      
+      if (userError) {
+        if (userError.message?.includes('session') || userError.message?.includes('Auth session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw userError
+      }
+
       const { error: deleteError } = await supabase
         .from('appointments')
         .delete()
         .eq('id', id)
       
-      if (deleteError) throw deleteError
+      if (deleteError) {
+        if (deleteError.message?.includes('JWT') || deleteError.message?.includes('session')) {
+          throw new Error('Sessão expirada. Por favor, faça login novamente.')
+        }
+        throw deleteError
+      }
       
       // Atualizar a lista de agendamentos após exclusão bem-sucedida
       await fetchAppointments()

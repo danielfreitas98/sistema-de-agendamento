@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAppointments } from '../hooks/useAppointments'
+import { useAuth } from '../context/AuthContext'
 
 function AppointmentsManager() {
+  const navigate = useNavigate()
+  const { signOut, user } = useAuth()
   const { appointments, loading, error, fetchAppointments, addAppointment, updateAppointment, deleteAppointment } = useAppointments()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -130,6 +134,15 @@ function AppointmentsManager() {
     }
   }
 
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      navigate('/login')
+    } catch (err) {
+      console.error('Erro ao fazer logout:', err)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
@@ -137,14 +150,27 @@ function AppointmentsManager() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Gerenciamento de Agendamentos</h1>
-            <p className="text-gray-600 mt-2">Gerencie todos os seus agendamentos</p>
+            <p className="text-gray-600 mt-2">
+              Gerencie todos os seus agendamentos
+              {user?.email && (
+                <span className="ml-2 text-sm text-gray-500">({user.email})</span>
+              )}
+            </p>
           </div>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors"
-          >
-            + Novo Agendamento
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors"
+            >
+              + Novo Agendamento
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-colors"
+            >
+              Sair
+            </button>
+          </div>
         </div>
 
         {/* Error Message */}

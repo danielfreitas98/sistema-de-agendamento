@@ -60,10 +60,46 @@ Após executar `npm run dev`, você verá algo como:
 
 ## 🔗 Rotas Disponíveis
 
-- **Home:** `http://localhost:5173/`
-- **Agendamentos:** `http://localhost:5173/appointments`
+- **Home:** `http://localhost:5173/` - Página inicial
+- **Login:** `http://localhost:5173/login` - Página de login (necessário para acessar agendamentos)
+- **Registro:** `http://localhost:5173/register` - Criar nova conta
+- **Agendamentos:** `http://localhost:5173/appointments` - ⚠️ **Requer autenticação**
 - **Área do Profissional:** `http://localhost:5173/professional`
 - **Configuração do Banco:** `http://localhost:5173/config`
+
+## 🔐 Como Fazer Login e Acessar os Agendamentos
+
+### Primeira Vez (Criar Conta):
+
+1. **Acesse a página inicial:** `http://localhost:5173/`
+2. **Clique em "Criar Conta"** ou acesse diretamente: `http://localhost:5173/register`
+3. **Preencha o formulário:**
+   - Email (ex: `seuemail@exemplo.com`)
+   - Senha (mínimo 6 caracteres)
+   - Confirme a senha
+4. **Clique em "Criar conta"**
+5. Você será redirecionado automaticamente para a página de agendamentos
+
+### Próximas Vezes (Fazer Login):
+
+1. **Acesse a página inicial:** `http://localhost:5173/`
+2. **Clique em "Fazer Login"** ou acesse diretamente: `http://localhost:5173/login`
+3. **Digite suas credenciais:**
+   - Email
+   - Senha
+4. **Clique em "Entrar"**
+5. Você será redirecionado para a página de agendamentos
+
+### ⚠️ Importante sobre Autenticação:
+
+- A página de **Agendamentos** (`/appointments`) agora **requer login**
+- Se você tentar acessar sem estar logado, será redirecionado para a página de login
+- Após fazer login, você pode:
+  - Ver seus agendamentos
+  - Criar novos agendamentos
+  - Editar seus agendamentos
+  - Excluir seus agendamentos
+  - Fazer logout (botão "Sair" no canto superior direito)
 
 ---
 
